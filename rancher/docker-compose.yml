@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  server:
+    image: rancher/rancher:v2.7.10
+    privileged: true
+    restart: always
+    environment:
+      CATTLE_SYSTEM_DEFAULT_REGISTRY: "10.0.2.15:5000/sviv-docker"
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - type: volume
+        source: cni
+        target: /var/lib/cni
+      - type: volume
+        source: data
+        target: /var/lib/rancher-data
+      - type: volume
+        source: kubelet
+        target: /var/lib/kubelet
+      - type: volume
+        source: log
+        target: /var/log
+      - type: volume
+        source: rancher
+        target: /var/lib/rancher
+      - $PWD/certs/domain.crt:/etc/rancher/ssl/cert.pem \
+      - $PWD/certs/domain.key:/etc/rancher/ssl/key.pem \
+#      - $PWD/certs:/etc/rancher/ssl/cacerts.pem \
+
+volumes:
+  cni:
+  data:
+  kubelet:
+  log:
+  rancher:

@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    restart: always
+    container_name: nginx
+    volumes:
+      - ./default.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "80:80"
+
+  minio:
+    image: minio/minio
+    restart: always
+    container_name: minio
+    environment:
+      MINIO_ACCESS_KEY: "minioadmin"
+      MINIO_SECRET_KEY: "minioadmin123"
+      MINIO_BROWSER_REDIRECT_URL: "http://dpc.tax.nalog.ru/minio/ui"  # Указываем URL для редиректа на консоль
+    volumes:
+      - data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
+
+  gitea:
+    image: gitea/gitea:1.22.3
+    restart: always
+    volumes:
+      - data-gitea:/var/lib/gitea
+      - config:/etc/gitea
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "3000:3000"
+      - "2222:22"
+    environment:
+      - USER=git
+      - USER_UID=1000
+      - USER_GID=1000
+volumes:
+  data-gitea:
+  config:

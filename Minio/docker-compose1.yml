@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  minio:
+    image: "registry/minio:2024.4.18"
+    hostname: "koe-dev01.koe.local"
+    environment:
+      MINIO_ROOT_USER: "admin"
+      MINIO_ROOT_PASSWORD: "super-secret-password"
+      MINIO_SKIP_CLIENT: "yes"
+    restart: always
+    volumes:
+      data:bitnami/minio/data
+	  ports:
+     	- '9000:9000'
+      - '9001:9001'
+  angie:
+	  image: registry/angie:latest
+	  ports:
+      - '80:80'
+    restart: always
+    volumes: 
+      - ./default.conf:/etc/angie/http.d/default.conf
+ 
+volumes:
+  data:
